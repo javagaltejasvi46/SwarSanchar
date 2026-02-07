@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/venv/
+venv/
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Build Artifacts
+build/
+dist/
+frontend/build/
+
+# Large Files & Releases
+*.zip
+release_v2/
+release_v2.zip
+ffmpeg.exe
+
+# Application Data
+data/
+temp/
+processed/
+converted/
+logs/
+*.log
+
+# Environment
+.env

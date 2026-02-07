@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Swarsanchar Media Suite</title>
+    
+    <!-- React & Router -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f2b90d",
+                        "primary-dark": "#b38600",
+                        "background-light": "#333333", // Merged
+                        "background-dark": "#181611", // Merged
+                        "chassis": "#1c1c1c",
+                        "chassis-light": "#2a2a2a",
+                        "brass": "#bfa15f",
+                        "panel-dark": "#221e10", 
+                        "surface-dark": "#2c281b", 
+                        "gold-metallic": "#d4af37",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(242, 185, 13, 0.3)',
+                        'glow-intense': '0 0 20px rgba(242, 185, 13, 0.6)',
+                        'recessed': 'inset 2px 2px 5px rgba(0,0,0,0.7), inset -1px -1px 1px rgba(255,255,255,0.05)',
+                        'knob': '0 4px 6px -1px rgba(0, 0, 0, 0.5), inset 0 2px 4px 0 rgba(255, 255, 255, 0.1)',
+                        'knob-inner': 'inset 0 4px 6px rgba(0,0,0,0.6)',
+                        'well': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.6)',
+                        'gold-glow': '0 0 10px rgba(242, 185, 13, 0.3)',
+                        'gold-glow-lg': '0 0 20px rgba(242, 185, 13, 0.15)',
+                        'plate': 'inset 1px 1px 0 rgba(255,255,255,0.05), 0 4px 8px rgba(0,0,0,0.4)',
+                    }
+                },
+            },
+        }
+    </script>
+
+    <style>
+        /* Shared Styles */
+        body { font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Screen 1 Specifics */
+        .texture-noise { background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCb42agSLPHnx4QArVBtnzTNwRBlkpb4s180Wuw2NqKQxOluCH-qBd8jerWwqaK0oIEfRDDHG1hIs4BqGdwzLc1ZJWzQcDlxdE_ylvbKEqaLUJwwJiRBcrYR21nz82aDtbYKlzHWhIUTPnvZWML3oCG6QmOOxRu5HtzNgurrkm3cj5xNjQ8vQ6YmvN4nY83QsakqIm_hMGKbesi5px9gGb-fbOlQ8lSH34pWaTK49PoBAU4UDcGPqccLWLZw7eW4EV8la_9b3BtxIz3); }
+        .gold-gradient-text { background: linear-gradient(to bottom, #fef08a, #f2b90d, #b45309); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .led-active { box-shadow: 0 0 8px #f2b90d, inset 0 0 4px #fff; background-color: #f2b90d; }
+        select.skeuo-select {
+            appearance: none;
+            background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuA0sHeen2NOvQZTM6lHDt6q9N2VpuO3g_5yRWfTvmUaYbiw3zrS77WU09-KyRW4aCxfeuYF9bGsPsxYiul88e6MIVYnjlf2EHpM7e0vFnZuhjz5qwgb0om6Bbn_OFS5Tf6ci3G-S4LyCyfm_5LdU66A2Lcg2IIpQw2a8wYfPyJEMrqJ96WDZhfuEsEwqFFtd9OlgWuUNJTrN6DfEvteDjTIPKU3rS6tWaudd5BXv3e_GP27NBI09jOzVtjWuU3rbqL0RJCf9MGQJYwx);
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        @keyframes wave { 0% { height: 10%; } 50% { height: 100%; } 100% { height: 10%; } }
+        .wave-bar { width: 4px; background: linear-gradient(to top, #b45309, #f2b90d); margin: 0 2px; border-radius: 2px; animation: wave 1s ease-in-out infinite; }
+        .text-shadow-glow { text-shadow: 0 0 10px rgba(242, 185, 13, 0.5); }
+
+        /* Screen 2 Specifics */
+        ::-webkit-scrollbar { width: 8px; height: 8px; background-color: #181611; }
+        ::-webkit-scrollbar-thumb { background-color: #393528; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background-color: #f2b90d; }
+        .gold-text-gradient { background: linear-gradient(to bottom, #fce38a, #f2b90d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .master-dial {
+            background: conic-gradient(from 180deg, #181611 0deg, #3a352a 100deg, #544e3b 180deg, #3a352a 260deg, #181611 360deg);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 2px 5px rgba(255,255,255,0.1), 0 0 0 2px #181611, 0 0 0 4px #393528;
+        }
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 16px; background: linear-gradient(to bottom, #555, #222); border: 1px solid #666; border-radius: 4px; cursor: pointer; margin-top: -10px; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #2c281b; border-radius: 2px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body class="bg-background-dark text-white font-display min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate } = ReactRouterDOM;
+
+        // --- Screen 1: Downloader Page ---
+        const DownloaderPage = () => {
+            const [url, setUrl] = useState("https://youtube.com/watch?v=dQw4w9WgXcQ");
+            const [downloading, setDownloading] = useState(false);
+
+            const handleDownload = () => {
+                setDownloading(true);
+                setTimeout(() => setDownloading(false), 2000);
+            };
+
+            const waveBars = Array.from({ length: 40 }).map((_, i) => ({
+                duration: `${0.5 + Math.random()}s`,
+                height: `${20 + Math.random() * 80}%`
+            }));
+
+            return (
+                <div className="bg-[#1a1a1a] text-[#bab29c] font-display min-h-screen flex items-center justify-center p-4 selection:bg-primary selection:text-black">
+                    <div className="relative w-full max-w-6xl bg-chassis rounded-xl shadow-2xl overflow-hidden border-t border-white/10 border-b-4 border-black texture-noise">
+                        {/* Screws */}
+                        <div className="absolute top-3 left-3 size-4 rounded-full bg-[#111] border border-[#444] shadow-inner flex items-center justify-center z-20">
+                            <div className="w-2 h-0.5 bg-[#333] rotate-45"></div>
+                        </div>
+                        <div className="absolute top-3 right-3 size-4 rounded-full bg-[#111] border border-[#444] shadow-inner flex items-center justify-center z-20">
+                            <div className="w-2 h-0.5 bg-[#333] rotate-12"></div>
+                        </div>
+                        <div className="absolute bottom-3 left-3 size-4 rounded-full bg-[#111] border border-[#444] shadow-inner flex items-center justify-center z-20">
+                            <div className="w-2 h-0.5 bg-[#333] rotate-90"></div>
+                        </div>
+                        <div className="absolute bottom-3 right-3 size-4 rounded-full bg-[#111] border border-[#444] shadow-inner flex items-center justify-center z-20">
+                            <div className="w-2 h-0.5 bg-[#333] -rotate-45"></div>
+                        </div>
+
+                        <header className="relative flex items-center justify-between px-10 py-5 bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] border-b border-[#333] shadow-md z-10">
+                            <div className="flex items-center gap-4">
+                                <div className="size-10 bg-[#111] rounded-full flex items-center justify-center shadow-recessed border border-[#333]">
+                                    <span className="material-symbols-outlined text-primary text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>equalizer</span>
+                                </div>
+                                <div>
+                                    <h1 className="text-2xl font-bold tracking-widest text-white gold-gradient-text uppercase drop-shadow-sm">Swarsanchar</h1>
+                                    <p className="text-[10px] uppercase tracking-[0.2em] text-[#666]">Hi-Fi Audio/Video Downloader</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2 bg-[#111] px-3 py-1.5 rounded-full border border-[#333] shadow-recessed">
+                                    <div className="size-2 rounded-full bg-red-500/30"></div>
+                                    <div className="size-2 rounded-full bg-primary led-active"></div>
+                                    <span className="text-[10px] font-mono tracking-widest text-primary">ONLINE</span>
+                                </div>
+                                <div className="flex gap-2">
+                                    <div className="size-3 rounded-full bg-[#444] hover:bg-yellow-600 cursor-pointer"></div>
+                                    <div className="size-3 rounded-full bg-[#444] hover:bg-red-600 cursor-pointer"></div>
+                                </div>
+                            </div>
+                        </header>
+
+                        <main className="p-8 md:p-12 space-y-8 relative">
+                            <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
+                                <div className="lg:col-span-12 space-y-2">
+                                    <div className="flex justify-between items-end px-2">
+                                        <h2 className="text-xs font-bold tracking-[0.15em] text-[#666] uppercase flex items-center gap-2">
+                                            <span className="material-symbols-outlined text-sm">link</span> Source URL
+                                        </h2>
+                                    </div>
+                                    <div className="relative group">
+                                        <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/20 to-primary/0 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-500"></div>
+                                        <div className="relative flex items-center bg-[#0a0a0a] rounded-full border-2 border-[#333] shadow-recessed focus-within:border-primary focus-within:shadow-glow transition-all duration-300">
+                                            <span className="pl-6 text-[#444]">
+                                                <span className="material-symbols-outlined">input</span>
+                                            </span>
+                                            <input 
+                                                className="w-full bg-transparent border-none text-primary placeholder-[#333] px-4 py-4 focus:ring-0 text-lg font-mono tracking-wide" 
+                                                placeholder="Paste YouTube URL here..." 
+                                                type="text" 
+                                                value={url}
+                                                onChange={(e) => setUrl(e.target.value)}
+                                            />
+                                            <div className="pr-2">
+                                                <button onClick={() => setUrl('')} className="size-10 rounded-full bg-[#1a1a1a] text-[#666] hover:text-white hover:bg-[#333] flex items-center justify-center transition-colors">
+                                                    <span className="material-symbols-outlined">close</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                                <div className="space-y-2">
+                                    <h2 className="text-xs font-bold tracking-[0.15em] text-[#666] uppercase pl-2">Type</h2>
+                                    <div className="relative">
+                                        <select className="skeuo-select w-full bg-[#151515] text-[#bab29c] border border-[#333] rounded-lg p-3 pr-10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)] focus:border-primary focus:ring-1 focus:ring-primary outline-none font-mono text-sm uppercase cursor-pointer hover:border-[#555] transition-colors">
+                                            <option value="audio">Audio Only</option>
+                                            <option value="video">Video + Audio</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <h2 className="text-xs font-bold tracking-[0.15em] text-[#666] uppercase pl-2">Format</h2>
+                                    <div className="relative">
+                                        <select className="skeuo-select w-full bg-[#151515] text-[#bab29c] border border-[#333] rounded-lg p-3 pr-10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)] focus:border-primary focus:ring-1 focus:ring-primary outline-none font-mono text-sm uppercase cursor-pointer hover:border-[#555] transition-colors">
+                                            <option value="wav">WAV (Lossless)</option>
+                                            <option value="mp3">MP3 (Compressed)</option>
+                                            <option value="flac">FLAC</option>
+                                            <option value="aac">AAC</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <h2 className="text-xs font-bold tracking-[0.15em] text-[#666] uppercase pl-2">Resolution</h2>
+                                    <div className="relative">
+                                        <select className="skeuo-select w-full bg-[#151515] text-[#bab29c] border border-[#333] rounded-lg p-3 pr-10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)] focus:border-primary focus:ring-1 focus:ring-primary outline-none font-mono text-sm uppercase cursor-pointer hover:border-[#555] transition-colors">
+                                            <option value="1080">1080p HD</option>
+                                            <option value="720">720p HD</option>
+                                            <option value="480">480p SD</option>
+                                            <option value="4k">4K Ultra HD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-64 lg:h-80">
+                                <div className="lg:col-span-8 bg-[#0a0a0a] rounded-xl border-2 border-[#333] shadow-recessed p-4 relative overflow-hidden flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+                                    <div className="flex items-center gap-[2px] h-32 w-full px-8 opacity-90 z-10">
+                                        {waveBars.map((bar, i) => (
+                                            <div key={i} className="wave-bar" style={{ animationDuration: bar.duration, height: bar.height }}></div>
+                                        ))}
+                                    </div>
+                                    <div className="absolute bottom-2 right-4 text-[10px] font-mono text-primary uppercase tracking-widest opacity-60">Audio Visualization</div>
+                                </div>
+                                <div className="lg:col-span-4 bg-[#0a0a0a] rounded-xl border-2 border-[#333] shadow-recessed relative overflow-hidden flex flex-col">
+                                    <div className="flex-1 bg-black relative">
+                                        <div className="absolute inset-0 flex items-center justify-center text-[#333]">
+                                            <span className="material-symbols-outlined text-6xl opacity-20">movie</span>
+                                        </div>
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="size-12 rounded-full border-2 border-[#444] flex items-center justify-center bg-black/40 backdrop-blur-sm hover:scale-110 transition-transform cursor-pointer">
+                                                <span className="material-symbols-outlined text-[#bab29c]">play_arrow</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-[#111] p-2 border-t border-[#222] flex justify-between items-center">
+                                        <div className="text-[10px] font-mono text-[#666]">PREVIEW MODE</div>
+                                        <div className="text-[10px] font-mono text-primary">00:00:00</div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                <button onClick={handleDownload} className="group relative w-full h-20 rounded-xl bg-[#151515] border border-[#333] shadow-lg flex items-center justify-center overflow-hidden transition-all active:scale-[0.98]">
+                                    <div className="absolute inset-0 bg-gradient-to-b from-[#2a2a2a] to-[#151515] opacity-100 group-hover:opacity-90"></div>
+                                    <div className="absolute inset-1 rounded-lg border border-[#444] bg-[#222] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] flex items-center justify-center gap-3 group-hover:bg-[#252525] transition-colors">
+                                        <span className="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform">download</span>
+                                        <span className={`text-lg font-bold tracking-widest text-primary uppercase group-hover:text-[#ffce22] text-shadow-glow ${downloading ? 'animate-pulse' : ''}`}>
+                                            {downloading ? 'Processing...' : 'Download Media'}
+                                        </span>
+                                    </div>
+                                </button>
+                                <Link to="/splitter" className="group relative w-full h-20 rounded-xl bg-[#151515] border border-[#333] shadow-lg flex items-center justify-center overflow-hidden transition-all active:scale-[0.98]">
+                                    <div className="absolute inset-0 bg-gradient-to-b from-[#2a2a2a] to-[#151515] opacity-100 group-hover:opacity-90"></div>
+                                    <div className="absolute inset-1 rounded-lg border border-[#444] bg-[#222] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] flex items-center justify-center gap-3 group-hover:bg-[#252525] transition-colors">
+                                        <span className="material-symbols-outlined text-[#bab29c] text-3xl group-hover:text-white transition-colors">call_split</span>
+                                        <span className="text-lg font-bold tracking-widest text-[#bab29c] uppercase group-hover:text-white transition-colors">Import to Splitter</span>
+                                    </div>
+                                </Link>
+                            </section>
+
+                            <div className="pt-6 mt-4 border-t border-[#333] flex justify-between items-center text-[#444] text-[10px] font-mono tracking-wider uppercase">
+                                <div className="flex gap-4">
+                                    <span>SYS: READY</span>
+                                    <span>MEM: 64%</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-sm">copyright</span>
+                                    <span>Swarsanchar v2.0</span>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Components for Screen 2 ---
+
+        const TrackRow = ({ name, icon, color = "#bab29c", waveform }) => {
+            const [muted, setMuted] = useState(false);
+            const [solo, setSolo] = useState(false);
+            const [volume, setVolume] = useState(70);
+
+            return (
+                <div className="bg-[#1f1d16] border border-[#393528] rounded-lg p-4 shadow-plate flex items-center gap-4 group hover:border-primary/30 transition-colors">
+                    <div className="w-8 h-full flex flex-col items-center justify-center gap-2 border-r border-[#393528] pr-4">
+                        <span className={`material-symbols-outlined text-2xl`} style={{ color: icon === 'mic' ? '#f2b90d' : color }}>{icon}</span>
+                        <span className="text-[10px] font-bold text-[#bab29c] -rotate-90 whitespace-nowrap w-4 h-8 flex items-center justify-center">{name.toUpperCase()}</span>
+                    </div>
+                    <div className="flex-1 flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-bold text-white">{name}.wav</span>
+                                {name === 'Vocals' && <span className="text-[10px] bg-primary/20 text-primary px-1.5 rounded border border-primary/30">AI ISOLATED</span>}
+                            </div>
+                            <div className="flex gap-2">
+                                <button onClick={() => setMuted(!muted)} className={`size-6 border border-[#393528] text-[10px] font-bold rounded shadow-well transition-colors ${muted ? 'bg-red-900/50 text-white border-red-800' : 'bg-[#2c281b] text-[#bab29c] hover:text-white hover:bg-[#393528]'}`}>M</button>
+                                <button onClick={() => setSolo(!solo)} className={`size-6 border border-[#393528] text-[10px] font-bold rounded shadow-well transition-colors ${solo ? 'bg-yellow-900/50 text-white border-yellow-800' : 'bg-[#2c281b] text-[#bab29c] hover:text-white hover:bg-[#393528]'}`}>S</button>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4 bg-[#12100c] p-2 rounded border border-[#2a261d] shadow-well">
+                            <div className="w-32 relative h-8 flex items-center px-1">
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="100" 
+                                    value={volume}
+                                    onChange={(e) => setVolume(e.target.value)}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
+                                />
+                                <div className="absolute inset-x-2 h-1 bg-[#2c281b] rounded-full shadow-inner"></div>
+                                <div 
+                                    className="absolute top-1/2 -translate-y-1/2 w-4 h-6 bg-gradient-to-b from-[#555] to-[#222] rounded border border-[#666] shadow-lg cursor-grab z-10 flex items-center justify-center pointer-events-none"
+                                    style={{ left: `${volume}%`, marginLeft: `-${(volume/100) * 16}px` }}
+                                >
+                                    <div className="w-full h-[1px] bg-black"></div>
+                                </div>
+                            </div>
+                            <div className="flex-1 h-10 relative overflow-hidden opacity-80">
+                                {waveform}
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3 mt-1">
+                            <div className="relative">
+                                <select className="appearance-none bg-[#181611] text-[#bab29c] text-xs border border-[#393528] rounded pl-2 pr-6 py-1 focus:border-primary focus:ring-0 shadow-well">
+                                    <option>Original Pitch</option>
+                                    <option>+1 Semitone</option>
+                                    <option>-1 Semitone</option>
+                                </select>
+                                <span className="material-symbols-outlined absolute right-1 top-1.5 text-xs text-[#555] pointer-events-none">expand_more</span>
+                            </div>
+                            <div className="relative">
+                                <select className="appearance-none bg-[#181611] text-[#bab29c] text-xs border border-[#393528] rounded pl-2 pr-6 py-1 focus:border-primary focus:ring-0 shadow-well">
+                                    <option>WAV (Lossless)</option>
+                                    <option>MP3 (320kbps)</option>
+                                </select>
+                                <span className="material-symbols-outlined absolute right-1 top-1.5 text-xs text-[#555] pointer-events-none">expand_more</span>
+                            </div>
+                            <button className="ml-auto px-3 py-1 bg-[#2c281b] hover:bg-[#393528] border border-[#393528] hover:border-primary/50 text-xs font-bold text-primary rounded shadow-plate flex items-center gap-1 transition-all">
+                                <span className="material-symbols-outlined text-sm">download</span> Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Screen 2: Splitter Page ---
+        const SplitterPage = () => {
+            const [masterVol, setMasterVol] = useState(70);
+            const [stems, setStems] = useState(4);
+
+            return (
+                <div className="bg-background-dark text-white font-display overflow-hidden h-screen flex flex-col">
+                    <header className="flex items-center justify-between border-b border-[#393528] px-6 py-3 bg-[#181611] shrink-0 z-20 shadow-md relative">
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 pointer-events-none"></div>
+                        <div className="flex items-center gap-4 text-white z-10">
+                            <div className="size-8 text-primary">
+                                <span className="material-symbols-outlined text-3xl">graphic_eq</span>
+                            </div>
+                            <h2 className="text-white text-xl font-bold tracking-tight gold-text-gradient uppercase">Swarsanchar <span className="text-[#bab29c] text-sm font-normal tracking-normal ml-2 normal-case opacity-70">AI Audio Splitter</span></h2>
+                        </div>
+                        <div className="flex items-center gap-4 z-10">
+                            <div className="hidden md:flex gap-6 text-sm font-medium text-[#bab29c] mr-4">
+                                <a className="hover:text-primary transition-colors" href="#">History</a>
+                                <a className="hover:text-primary transition-colors" href="#">Settings</a>
+                                <a className="hover:text-primary transition-colors" href="#">Help</a>
+                            </div>
+                            <button className="flex items-center justify-center size-9 rounded-full bg-[#2c281b] hover:bg-[#393528] text-[#bab29c] hover:text-white transition-all shadow-well border border-[#393528]">
+                                <span className="material-symbols-outlined text-[20px]">account_circle</span>
+                            </button>
+                        </div>
+                    </header>
+                    <main className="flex flex-1 overflow-hidden relative">
+                        <div className="absolute inset-0 bg-[#181611] z-0" style={{ backgroundImage: "radial-gradient(#2c281b 1px, transparent 1px)", backgroundSize: "24px 24px" }}></div>
+                        <div className="flex flex-col w-full max-w-6xl mx-auto z-10 p-6 h-full overflow-y-auto">
+                            <section className="bg-[#1f1d16] border border-[#393528] rounded-xl p-6 shadow-plate mb-6 relative overflow-hidden">
+                                {/* Screws */}
+                                <div className="absolute top-3 left-3 size-3 rounded-full bg-[#2a261d] shadow-inner flex items-center justify-center border border-[#111]"><div className="w-1.5 h-0.5 bg-[#111] rotate-45"></div></div>
+                                <div className="absolute top-3 right-3 size-3 rounded-full bg-[#2a261d] shadow-inner flex items-center justify-center border border-[#111]"><div className="w-1.5 h-0.5 bg-[#111] rotate-12"></div></div>
+                                <div className="absolute bottom-3 left-3 size-3 rounded-full bg-[#2a261d] shadow-inner flex items-center justify-center border border-[#111]"><div className="w-1.5 h-0.5 bg-[#111] rotate-90"></div></div>
+                                <div className="absolute bottom-3 right-3 size-3 rounded-full bg-[#2a261d] shadow-inner flex items-center justify-center border border-[#111]"><div className="w-1.5 h-0.5 bg-[#111] rotate-45"></div></div>
+                                
+                                <div className="flex flex-col md:flex-row gap-8 items-center justify-between px-4">
+                                    <div className="flex-1 w-full space-y-3">
+                                        <label className="text-[#bab29c] text-xs font-bold uppercase tracking-widest ml-1">Import Audio Source</label>
+                                        <div className="flex gap-3">
+                                            <div className="flex-1 relative group">
+                                                <input className="hidden" id="audio-upload" type="file"/>
+                                                <label className="flex items-center justify-between w-full h-12 bg-[#12100c] border border-[#393528] rounded cursor-pointer px-4 hover:border-primary/50 transition-all shadow-well group-hover:shadow-gold-glow" htmlFor="audio-upload">
+                                                    <span className="text-[#bab29c] font-mono text-sm group-hover:text-white truncate">Select Audio File...</span>
+                                                    <span className="material-symbols-outlined text-primary">folder_open</span>
+                                                </label>
+                                            </div>
+                                            <Link to="/" className="h-12 px-6 bg-[#2c281b] hover:bg-[#393528] text-[#bab29c] hover:text-white border border-[#393528] rounded font-medium text-sm shadow-plate transition-all flex items-center gap-2 whitespace-nowrap">
+                                                <span className="material-symbols-outlined text-lg">download</span>
+                                                Import from Downloader
+                                            </Link>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col items-center gap-4 min-w-[300px]">
+                                        <div className="flex flex-col items-center gap-2">
+                                            <span className="text-[#bab29c] text-[10px] font-bold uppercase tracking-wider">Stem Separation Model</span>
+                                            <div className="relative bg-[#12100c] p-1 rounded-full border border-[#393528] shadow-well flex">
+                                                <div 
+                                                    className={`absolute inset-y-1 w-[calc(50%-4px)] bg-[#393528] rounded-full transition-all duration-300 transform ${stems === 4 ? 'translate-x-full left-1' : 'left-1'}`}
+                                                ></div>
+                                                <button onClick={() => setStems(2)} className={`relative z-10 px-6 py-1.5 text-xs font-bold transition-colors ${stems === 2 ? 'text-primary' : 'text-[#bab29c]'}`}>2 STEMS</button>
+                                                <button onClick={() => setStems(4)} className={`relative z-10 px-6 py-1.5 text-xs font-bold transition-colors ${stems === 4 ? 'text-primary' : 'text-[#bab29c]'}`}>4 STEMS</button>
+                                            </div>
+                                        </div>
+                                        <button className="w-full h-14 bg-gradient-to-b from-[#f2b90d] to-[#b38600] text-black font-bold text-lg tracking-widest uppercase rounded shadow-[0_0_15px_rgba(242,185,13,0.4)] hover:shadow-[0_0_25px_rgba(242,185,13,0.6)] hover:brightness-110 active:scale-[0.98] transition-all border-t border-[#ffe066] border-b border-[#806000] flex items-center justify-center gap-3">
+                                            <span className="material-symbols-outlined">call_split</span>
+                                            Split Audio
+                                        </button>
+                                    </div>
+                                </div>
+                            </section>
+                            
+                            <div className="flex flex-col lg:flex-row gap-6 h-full min-h-0">
+                                <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-2 pb-4">
+                                    <TrackRow 
+                                        name="Vocals" 
+                                        icon="mic"
+                                        waveform={
+                                            <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 200 40">
+                                                <path d="M0 20 L5 10 L10 30 L15 15 L20 25 L25 5 L30 35 L35 18 L40 22 L45 10 L50 30 L55 12 L60 28 L65 15 L70 25 L75 8 L80 32 L85 18 L90 22 L95 12 L100 28 L105 15 L110 25 L115 5 L120 35 L125 18 L130 22 L135 10 L140 30 L145 12 L150 28 L155 15 L160 25 L165 8 L170 32 L175 18 L180 22 L185 12 L190 28 L195 15 L200 25" fill="none" filter="drop-shadow(0 0 2px rgba(242,185,13,0.5))" stroke="#f2b90d" strokeWidth="1.5"></path>
+                                            </svg>
+                                        }
+                                    />
+                                    <TrackRow 
+                                        name="Drums" 
+                                        icon="album"
+                                        waveform={
+                                            <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 200 40">
+                                                <path d="M0 20 L2 10 L5 30 L10 20 L15 20 L20 10 L25 30 L30 20 L35 20 L40 5 L45 35 L50 20 L55 20 L60 10 L65 30 L70 20 L75 20 L80 5 L85 35 L90 20 L95 20 L100 10 L105 30 L110 20 L115 20 L120 5 L125 35 L130 20 L135 20 L140 10 L145 30 L150 20 L155 20 L160 5 L165 35 L170 20 L175 20 L180 10 L185 30 L190 20 L195 20 L200 20" fill="none" stroke="#bab29c" strokeWidth="1.5"></path>
+                                            </svg>
+                                        }
+                                    />
+                                    <TrackRow 
+                                        name="Bass" 
+                                        icon="music_note"
+                                        waveform={
+                                            <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 200 40">
+                                                <path d="M0 20 Q10 10 20 20 T40 20 T60 20 T80 20 T100 20 T120 20 T140 20 T160 20 T180 20 T200 20" fill="none" stroke="#bab29c" strokeLinecap="round" strokeWidth="2"></path>
+                                            </svg>
+                                        }
+                                    />
+                                    <TrackRow 
+                                        name="Other" 
+                                        icon="graphic_eq"
+                                        waveform={
+                                            <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 200 40">
+                                                <path d="M0 20 L2 18 L5 22 L8 19 L10 20 L200 20" fill="none" stroke="#bab29c" strokeWidth="1"></path>
+                                            </svg>
+                                        }
+                                    />
+                                </div>
+                                
+                                <div className="w-full lg:w-64 shrink-0">
+                                    <div className="bg-[#1f1d16] border border-[#393528] rounded-xl p-6 shadow-plate h-full flex flex-col items-center justify-between relative min-h-[300px]">
+                                        <div className="absolute top-3 left-3 size-3 rounded-full bg-[#2a261d] shadow-inner flex items-center justify-center border border-[#111]"><div className="w-1.5 h-0.5 bg-[#111] rotate-45"></div></div>
+                                        <div className="absolute top-3 right-3 size-3 rounded-full bg-[#2a261d] shadow-inner flex items-center justify-center border border-[#111]"><div className="w-1.5 h-0.5 bg-[#111] rotate-12"></div></div>
+                                        <div className="absolute bottom-3 left-3 size-3 rounded-full bg-[#2a261d] shadow-inner flex items-center justify-center border border-[#111]"><div className="w-1.5 h-0.5 bg-[#111] rotate-90"></div></div>
+                                        <div className="absolute bottom-3 right-3 size-3 rounded-full bg-[#2a261d] shadow-inner flex items-center justify-center border border-[#111]"><div className="w-1.5 h-0.5 bg-[#111] rotate-45"></div></div>
+                                        
+                                        <h3 className="text-[#bab29c] font-bold text-sm uppercase tracking-wider mb-4 border border-[#bab29c]/30 px-3 py-1 rounded">Master Volume</h3>
+                                        
+                                        <div 
+                                            className="relative size-40 rounded-full master-dial flex items-center justify-center cursor-pointer mb-6"
+                                            onClick={() => setMasterVol(masterVol > 90 ? 10 : masterVol + 10)}
+                                        >
+                                            <div className="absolute inset-2 rounded-full border border-dashed border-[#555] opacity-50"></div>
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="w-0.5 h-full bg-gradient-to-b from-[#f2b90d] via-transparent to-transparent rotate-0 absolute"></div>
+                                            </div>
+                                            <div 
+                                                className="size-32 rounded-full bg-gradient-to-br from-[#2a261d] to-[#12100c] shadow-[0_5px_10px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.1)] flex items-center justify-center relative transition-transform duration-200"
+                                                style={{ transform: `rotate(${210 + (masterVol * 2.4)}deg)` }}
+                                            >
+                                                <div className="absolute top-2 w-1.5 h-6 bg-primary rounded shadow-[0_0_5px_rgba(242,185,13,0.5)]"></div>
+                                                <div className="text-2xl font-bold text-[#333] font-mono select-none drop-shadow-[0_1px_0_rgba(255,255,255,0.1)]" style={{ transform: `rotate(-${210 + (masterVol * 2.4)}deg)` }}>VOL</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="w-full flex justify-center gap-2 mb-4">
+                                            <div className="w-2 h-20 bg-[#12100c] rounded-full border border-[#393528] p-0.5 flex flex-col justify-end gap-0.5 shadow-well">
+                                                <div className="h-1 w-full bg-red-500 rounded-sm opacity-20"></div>
+                                                <div className="h-1 w-full bg-yellow-500 rounded-sm opacity-20"></div>
+                                                <div className="h-1 w-full bg-green-500 rounded-sm"></div>
+                                                <div className="h-1 w-full bg-green-500 rounded-sm"></div>
+                                                <div className="h-1 w-full bg-green-500 rounded-sm"></div>
+                                            </div>
+                                            <div className="w-2 h-20 bg-[#12100c] rounded-full border border-[#393528] p-0.5 flex flex-col justify-end gap-0.5 shadow-well">
+                                                <div className="h-1 w-full bg-red-500 rounded-sm opacity-20"></div>
+                                                <div className="h-1 w-full bg-yellow-500 rounded-sm opacity-20"></div>
+                                                <div className="h-1 w-full bg-green-500 rounded-sm"></div>
+                                                <div className="h-1 w-full bg-green-500 rounded-sm"></div>
+                                                <div className="h-1 w-full bg-green-500 rounded-sm"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <button className="w-full py-2 bg-[#2c281b] hover:bg-[#393528] text-[#bab29c] hover:text-white border border-[#393528] rounded shadow-plate font-bold text-xs uppercase tracking-wider transition-all">
+                                            Download All Stems
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <footer className="h-8 bg-[#1f1d16] border-t border-[#393528] flex items-center justify-between px-4 text-xs shrink-0 text-[#bab29c] z-20">
+                        <div className="flex gap-4">
+                            <span>Ready.</span>
+                            <span className="text-primary">AI Engine v2.4 (Online)</span>
+                        </div>
+                        <div className="flex gap-4">
+                            <span>CPU: 12%</span>
+                            <span>GPU: Active</span>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const App = () => {
+            return (
+                <MemoryRouter>
+                    <Routes>
+                        <Route path="/" element={<DownloaderPage />} />
+                        <Route path="/splitter" element={<SplitterPage />} />
+                    </Routes>
+                </MemoryRouter>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

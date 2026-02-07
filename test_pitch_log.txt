@@ -1,0 +1,9 @@
+--- Starting Pitch Shift Test ---
+Soundfile version: 0.13.1
+Torchaudio version: 2.10.0+cpu
+Failed to set backend: module 'torchaudio' has no attribute 'set_audio_backend'
+Could not set torchaudio backend: module 'torchaudio' has no attribute 'set_audio_backend'
+Generating test audio: test_audio.wav
+Testing pitch shift: test_audio.wav -> test_audio_shifted.wav (2 semitones)
+Device: cpu
+SUCCESS: Pitch shift completed.

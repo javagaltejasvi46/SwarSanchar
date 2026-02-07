@@ -1,0 +1,32 @@
+# HF Space Deployment Details Required
+
+Please provide the following information to proceed with the hybrid deployment:
+
+1. **Hugging Face Space URL**: 
+   (e.g., https://huggingface.co/spaces/USERNAME/SPACE_NAME)
+   git clone https://huggingface.co/spaces/tejasvijavagal/SwarSanchar
+
+2. **Space Type**: 
+   (Are you using ZeroGPU (free) or a dedicated GPU instance (Paid)?)
+   free version not ZeroGPU( because we are not using gradio)
+
+3. **Privacy Level**: 
+   (Public or Private? If private, an API token will be needed for the frontend.)
+   Public
+
+4. **HF Username**: 
+   (To help with Docker image tagging and space configuration.)
+   tejasvijavagal
+
+5. **Existing HF Space Link**: 
+   (If you've already created the space, please paste the link here.)
+   https://huggingface.co/spaces/tejasvijavagal/SwarSanchar
+
+6. **Any specific hardware requirements**: 
+   (e.g. T4 GPU, 16GB RAM, etc.)
+   2vCPU, 16GB RAM
+---
+**Planned Architecture:**
+- **Backend**: Containerized (Docker) FastAPI server deployed on HF Spaces.
+- **Frontend**: Electron/React desktop app (pointing to the HF Space URL).
+- **Installer**: Windows installer bundle for the desktop application.
