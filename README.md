@@ -67,6 +67,15 @@ setup_dependencies.bat
 # 2. Install Python dependencies
 # 3. Download FFmpeg (if missing)
 # 4. Install Node.js dependencies
+# 5. Create desktop shortcut automatically
+```
+
+### Create Desktop Shortcut (Optional)
+
+If you need to recreate the desktop shortcut:
+
+```bash
+create_shortcut.bat
 ```
 
 ### Manual Setup

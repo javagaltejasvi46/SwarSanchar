@@ -67,8 +67,38 @@ echo ========================================
 echo Setup Complete!
 echo ========================================
 echo.
+
+REM Create desktop shortcut
+echo Creating desktop shortcut...
+set "SCRIPT_DIR=%~dp0"
+set "TARGET=%SCRIPT_DIR%run_app.bat"
+set "ICON=%SCRIPT_DIR%frontend\public\icon.ico"
+set "DESKTOP=%USERPROFILE%\Desktop"
+set "VBS_SCRIPT=%TEMP%\create_shortcut.vbs"
+
+echo Set oWS = WScript.CreateObject("WScript.Shell") > "%VBS_SCRIPT%"
+echo sLinkFile = "%DESKTOP%\Swarsanchar.lnk" >> "%VBS_SCRIPT%"
+echo Set oLink = oWS.CreateShortcut(sLinkFile) >> "%VBS_SCRIPT%"
+echo oLink.TargetPath = "%TARGET%" >> "%VBS_SCRIPT%"
+echo oLink.WorkingDirectory = "%SCRIPT_DIR%" >> "%VBS_SCRIPT%"
+echo oLink.Description = "Swarsanchar Media Suite - Audio Stem Splitter" >> "%VBS_SCRIPT%"
+echo oLink.IconLocation = "%ICON%" >> "%VBS_SCRIPT%"
+echo oLink.Save >> "%VBS_SCRIPT%"
+
+cscript //nologo "%VBS_SCRIPT%" >nul 2>&1
+del "%VBS_SCRIPT%" >nul 2>&1
+
+if exist "%DESKTOP%\Swarsanchar.lnk" (
+    echo Desktop shortcut created successfully!
+) else (
+    echo Note: Could not create desktop shortcut automatically.
+    echo You can run create_shortcut.bat manually to create it.
+)
+
+echo.
 echo You can now run the application with:
-echo   - Development: run_app.bat
+echo   - Desktop shortcut: Swarsanchar
+echo   - Or run: run_app.bat
 echo   - Build: build.bat
 echo.
 pause
