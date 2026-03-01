@@ -54,24 +54,61 @@ Swarsanchar final/
 
 - Node.js 18+ 
 - Python 3.8+
-- FFmpeg (for audio processing)
+- FFmpeg (automatically downloaded by setup script)
 
-### Backend Setup
+### Quick Setup (Recommended)
+
+```bash
+# Run the automated setup script
+setup_dependencies.bat
+
+# This will:
+# 1. Create Python virtual environment
+# 2. Install Python dependencies
+# 3. Download FFmpeg (if missing)
+# 4. Install Node.js dependencies
+```
+
+### Manual Setup
+
+#### Backend Setup
 
 ```bash
 cd backend
 python -m venv venv
 venv\Scripts\activate  # Windows
 pip install -r requirements.txt
-python app.py
 ```
 
-### Frontend Setup
+#### Download FFmpeg
+
+```bash
+# From project root
+python download_ffmpeg.py
+```
+
+This will download FFmpeg 8.0.1 to the `backend/` folder.
+
+#### Frontend Setup
 
 ```bash
 cd frontend
 npm install
 npm run dev
+```
+
+### Troubleshooting
+
+If you encounter issues, run the troubleshooting tool:
+
+```bash
+troubleshoot.bat
+```
+
+Or test the backend directly:
+
+```bash
+python test_backend.py
 ```
 
 ## Building for Production
@@ -96,7 +133,25 @@ The installer will be created in `frontend/dist/`.
 ## Technologies
 
 - **Frontend**: Electron, React, TailwindCSS
-- **Backend**: Python Flask
-- **YouTube**: yt-dlp (actively maintained)
-- **AI Splitter**: Demucs (Meta's audio separation)
+- **Backend**: Python FastAPI
+- **AI Splitter**: BS-RoFormer via audio-separator (Meta's audio separation)
+- **Audio Processing**: librosa, torchaudio, soundfile
+- **Pitch Detection**: librosa with Krumhansl-Schmuckler algorithm
 - **Packaging**: PyInstaller, electron-builder
+
+## Recent Bug Fixes (March 2026)
+
+### Critical Issues Resolved:
+1. ✅ **FFmpeg Dependency** - Automated download and bundling
+2. ✅ **Missing Logger** - Proper logging initialization
+3. ✅ **Pydantic Models** - All API request/response models defined
+4. ✅ **soundfile Dependency** - Added to requirements
+5. ✅ **Path Detection** - Smart FFmpeg path resolution (bundled/local/system)
+
+### New Tools:
+- `setup_dependencies.bat` - Automated setup script
+- `troubleshoot.bat` - System diagnostics tool
+- `test_backend.py` - Backend verification script
+- `download_ffmpeg.py` - Enhanced FFmpeg downloader
+
+See `BUG_FIXES_APPLIED.md` for detailed information.

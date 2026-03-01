@@ -4,7 +4,7 @@ echo Starting Swarsanchar...
 
 :: 1. Start Backend (in a separate window)
 echo Starting Backend Server...
-start "Swarsanchar Backend" /min cmd /c "cd backend && python app.py"
+start "Swarsanchar Backend" /min cmd /c "cd backend && venv\Scripts\python.exe app.py"
 
 :: Wait a moment for backend to initialize
 timeout /t 3 /nobreak >nul

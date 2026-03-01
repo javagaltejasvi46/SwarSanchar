@@ -10,6 +10,7 @@ import uuid
 import logging
 import threading
 import subprocess
+import shutil
 from pathlib import Path
 from dataclasses import dataclass
 from typing import Optional, Dict, List, Callable
@@ -19,6 +20,28 @@ from io import StringIO
 from settings import settings_manager
 
 logger = logging.getLogger(__name__)
+
+# FFmpeg path detection
+def get_ffmpeg_path():
+    """Get FFmpeg executable path"""
+    if getattr(sys, 'frozen', False):
+        bundle_dir = Path(sys._MEIPASS)
+        ffmpeg_bundled = bundle_dir / "ffmpeg.exe"
+        if ffmpeg_bundled.exists():
+            return str(ffmpeg_bundled)
+    
+    backend_dir = Path(__file__).parent
+    ffmpeg_local = backend_dir / "ffmpeg.exe"
+    if ffmpeg_local.exists():
+        return str(ffmpeg_local)
+    
+    ffmpeg_system = shutil.which("ffmpeg")
+    if ffmpeg_system:
+        return ffmpeg_system
+    
+    return "ffmpeg"
+
+FFMPEG_PATH = get_ffmpeg_path()
 
 
 class TqdmProgressCapture:
@@ -319,7 +342,7 @@ class SplitterManager:
         """Convert audio file to MP3 using FFmpeg"""
         try:
             subprocess.run([
-                'ffmpeg', '-y', '-i', input_path,
+                FFMPEG_PATH, '-y', '-i', input_path,
                 '-codec:a', 'libmp3lame', '-b:a', bitrate,
                 output_path
             ], capture_output=True, check=True)

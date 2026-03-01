@@ -1,7 +1,18 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all
+import os
+from pathlib import Path
 
-datas = [('ffmpeg.exe', '.')]
+# Check if ffmpeg.exe exists in backend folder
+ffmpeg_path = Path('ffmpeg.exe')
+if ffmpeg_path.exists():
+    datas = [('ffmpeg.exe', '.')]
+    print(f"Including FFmpeg: {ffmpeg_path.absolute()}")
+else:
+    datas = []
+    print("WARNING: ffmpeg.exe not found! Run download_ffmpeg.py first.")
+    print("The application will try to use system FFmpeg if available.")
+
 binaries = []
 hiddenimports = [
     'sklearn.utils._cython_blas', 

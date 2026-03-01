@@ -22,12 +22,79 @@ from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+# Pydantic Request/Response Models
+class PathBrowseRequest(BaseModel):
+    type: str
+
+class AnalyzePitchRequest(BaseModel):
+    file_path: str
+    delete_after: bool = False
+
+class ProcessPitchRequest(BaseModel):
+    file_path: str
+    semitones: float
+    output_path: Optional[str] = None
+
+class SplitRequest(BaseModel):
+    input_file: str
+    stems: int = 2
+    format: str = "wav"
+    output_path: Optional[str] = None
+    model: str = "BS-Roformer-ViperX-1297"
+
+class ExportRequest(BaseModel):
+    source_files: List[str]
+    output_folder: str
+    format: str = "wav"
+
+class ConvertRequest(BaseModel):
+    input_path: str
+
+class OpenPathRequest(BaseModel):
+    path: str
+
 from fastapi.staticfiles import StaticFiles
 from settings import settings_manager, AppSettings
 
 from splitter import splitter_manager, SplitStatus
 from analysis import audio_analyzer
 from modifier import audio_modifier
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+# FFmpeg path detection
+def get_ffmpeg_path():
+    """Get FFmpeg executable path - check bundled first, then system PATH"""
+    # Check if running as PyInstaller bundle
+    if getattr(sys, 'frozen', False):
+        # Running as compiled executable
+        bundle_dir = Path(sys._MEIPASS)
+        ffmpeg_bundled = bundle_dir / "ffmpeg.exe"
+        if ffmpeg_bundled.exists():
+            return str(ffmpeg_bundled)
+    
+    # Check in backend folder (development or manual placement)
+    backend_dir = Path(__file__).parent
+    ffmpeg_local = backend_dir / "ffmpeg.exe"
+    if ffmpeg_local.exists():
+        return str(ffmpeg_local)
+    
+    # Check system PATH
+    ffmpeg_system = shutil.which("ffmpeg")
+    if ffmpeg_system:
+        return ffmpeg_system
+    
+    # Not found
+    logger.warning("FFmpeg not found! Audio conversion features may not work.")
+    return "ffmpeg"  # Return default and hope it's in PATH
+
+FFMPEG_PATH = get_ffmpeg_path()
+logger.info(f"FFmpeg path: {FFMPEG_PATH}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -385,7 +452,7 @@ async def export_stems(request: ExportRequest):
             else:
                 # Need to convert using ffmpeg
                 try:
-                    ffmpeg_cmd = ["ffmpeg", "-y", "-i", str(source_path)]
+                    ffmpeg_cmd = [FFMPEG_PATH, "-y", "-i", str(source_path)]
                     
                     if output_format == "mp3":
                         ffmpeg_cmd.extend(["-codec:a", "libmp3lame", "-b:a", "320k"])
@@ -459,7 +526,7 @@ async def convert_to_wav(data: ConvertRequest):
         # -ac 2: Stereo
         # -ar 44100: Sample Rate
         ffmpeg_cmd = [
-            "ffmpeg", "-y", 
+            FFMPEG_PATH, "-y", 
             "-i", str(input_path),
             "-acodec", "pcm_s16le",
             "-ar", "44100",
